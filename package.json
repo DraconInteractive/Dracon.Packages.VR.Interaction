@@ -1,0 +1,26 @@
+{
+    "name": "com.dracon.vr.interaction",
+    "displayName": "Dracon VR Interaction",
+    "version": "0.0.1",
+    "unity": "2019.1",
+    "description": "VR interaction base for multiple platforms, with some core functionality defined.",
+    "keywords": [
+      "input",
+      "interaction",
+      "vr",
+      "unity"
+    ],
+    "samples": [
+      {
+        "displayName": "Placeholder",
+        "description": "Placeholder sample for when I actually have extensible content to add",
+        "path": "Samples~/DialogueStuff"
+      }
+    ],
+    "author": {
+      "name": "Dracon Interactive",
+      "email": "draconinteractive@gmail.com",
+      "url": "http://www.draconinteractive.com.au"
+    },
+    "category": "Unity"
+  }
