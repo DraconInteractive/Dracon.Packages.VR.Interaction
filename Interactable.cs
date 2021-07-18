@@ -5,9 +5,6 @@ using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
-    public bool logData;
-    public int logID;
-    [Space]
     public string ID;
     public float interactionRange;
     public GameObject model, hover, hand;
@@ -33,20 +30,6 @@ public class Interactable : MonoBehaviour
 
     private void Update()
     {
-        if (logData)
-        {
-            string message = $"Item : {ID}\n";
-            message += $"InHand: {InHand}\n";
-            message += "Interactor: " + (interactor == null ? "Null" : interactor.name) + "\n";
-            message += "Modules: \n";
-            foreach (var mod in modules)
-            {
-                message += "- " + mod.GetType().FullName + "\n";
-            }
-            message += "\n";
-            Log.Add(logID, message);
-        }
-
         foreach (var module in modules)
         {
             module.UpdateEx();

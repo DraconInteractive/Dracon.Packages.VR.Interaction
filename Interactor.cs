@@ -8,8 +8,6 @@ public class Interactor : MonoBehaviour
     public static Interactor left, right;
     public Chirality hand;
 
-    public bool logData;
-
     Interactable target;
     Interactable last;
 
@@ -110,27 +108,12 @@ public class Interactor : MonoBehaviour
             }
         }
 
-        UpdateInput();
-        if (logData)
-        {
-            LogState();
-        }
-        
+        UpdateInput(); 
     }
 
     private void LateUpdate()
     {
         lastPos = transform.position;
-    }
-
-    void LogState ()
-    {
-        string message = $"Interactor - {hand.ToString()}; State: { state} \n";
-        message += $"Target: " + (target == null ? "Null" : target.name) + " | " + $"Last: " + (last == null ? "Null" : last.name) + "\n";
-        message += $"Summon: {summonProgress}\n";
-        message += $"Vel: {Velocity}";
-        int i = hand == Chirality.Left ? 0 : 1;
-        Log.Add(i, message);
     }
 
     void UpdateInput ()
