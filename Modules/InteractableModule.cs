@@ -5,6 +5,8 @@ using UnityEngine;
 public class InteractableModule : MonoBehaviour
 {
     protected Interactable target;
+
+    public bool InHand => target.InHand;
     public virtual void Setup(Interactable _target)
     {
         target = _target;
