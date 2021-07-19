@@ -44,6 +44,14 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    private void LateUpdate ()
+    {
+        foreach (var module in modules)
+        {
+            module.LateUpdateEx();
+        }
+    }
+
     private void OnValidate()
     {
         if (GUI.changed)
