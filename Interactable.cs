@@ -148,11 +148,19 @@ public class Interactable : MonoBehaviour
         interactor = owner;
         hand.SetActive(true);
         onGrab?.Invoke();
+        foreach (var module in modules)
+        {
+            module.OnGrab();
+        }
     }
 
     public void Release (Interactor owner)
     {
         onRelease?.Invoke();
+        foreach (var module in modules)
+        {
+            module.OnRelease();
+        }
         hand.SetActive(false);
         interactor = null;
     }

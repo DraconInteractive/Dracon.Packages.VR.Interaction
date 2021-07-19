@@ -29,4 +29,14 @@ public class InteractableModule : MonoBehaviour
     {
 
     }
+
+    public virtual void OnGrab ()
+    {
+
+    }
+
+    public virtual void OnRelease ()
+    {
+
+    }
 }
