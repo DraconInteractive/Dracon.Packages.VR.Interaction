@@ -41,4 +41,9 @@ public class InteractableModule : MonoBehaviour
     {
 
     }
+
+    public virtual void OnInteract ()
+    {
+
+    }
 }

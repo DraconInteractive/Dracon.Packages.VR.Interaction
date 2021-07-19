@@ -20,6 +20,7 @@ public class Interactor : MonoBehaviour
         Hovering,
         Holding
     }
+
     public State state;
 
     public float summonTime = 1.0f;
@@ -98,7 +99,7 @@ public class Interactor : MonoBehaviour
             if ((bool)iManager.GetInput(InputAction.GetUp, InputBinding.Grip, hand))
             {
                 Release();
-            }
+            } 
         }
         else if (state == State.Summoning)
         {
@@ -120,8 +121,13 @@ public class Interactor : MonoBehaviour
     {
         //thumbstick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, hand);
         thumbstick = (Vector2)iManager.GetInput(InputAction.Get, InputBinding.Thumbstick, hand);
+        
         if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Trigger, hand))
         {
+            if (state == State.Holding)
+            {
+                target.Interact();
+            }
         }
 
         if ((bool)iManager.GetInput(InputAction.GetUp, InputBinding.Trigger, hand))        

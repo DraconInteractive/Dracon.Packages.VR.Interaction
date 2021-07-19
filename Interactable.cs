@@ -15,7 +15,7 @@ public class Interactable : MonoBehaviour
     List<object> hovering = new List<object>();
     public Interactor interactor;
 
-    public UnityEvent onGrab, onRelease;
+    public UnityEvent onGrab, onRelease, onInteract;
 
     private void Start()
     {
@@ -163,6 +163,14 @@ public class Interactable : MonoBehaviour
         }
         hand.SetActive(false);
         interactor = null;
+    }
+
+    public void Interact ()
+    {
+        foreach (var module in modules)
+        {
+            module.OnInteract();
+        }
     }
 
     public void AddHover (object owner)
