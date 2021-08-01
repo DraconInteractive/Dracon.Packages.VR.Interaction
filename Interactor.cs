@@ -35,6 +35,8 @@ public class Interactor : MonoBehaviour
 
     public Vector2 thumbstick;
 
+    List<InteractorModule> modules = new List<InteractorModule>();
+
     private void Awake()
     {
         if (hand == Chirality.Left)
@@ -52,6 +54,11 @@ public class Interactor : MonoBehaviour
         state = State.Empty;
         iManager = InteractionsManager.Instance;
         model.SetActive(true);
+
+        foreach (var mod in modules)
+        {
+            mod.Setup(this);
+        }
     }
 
     private void Update()
@@ -113,6 +120,11 @@ public class Interactor : MonoBehaviour
         }
 
         UpdateInput(); 
+
+        foreach (var mod in modules)
+        {
+            mod.OnUpdateEx();
+        }
     }
 
     private void LateUpdate()
@@ -146,6 +158,11 @@ public class Interactor : MonoBehaviour
         {
             buttonTwo?.Invoke();
         }
+
+        foreach (var mod in modules)
+        {
+            mod.OnInputUpdateEx();
+        }
     }
 
     public void Grab (Interactable _target)
@@ -158,6 +175,11 @@ public class Interactor : MonoBehaviour
         _target.Grab(this);
         state = State.Holding;
         model.SetActive(false);
+
+        foreach (var mod in modules)
+        {
+            mod.OnGrabEx();
+        }
     }
 
     public void Summon ()
@@ -192,6 +214,11 @@ public class Interactor : MonoBehaviour
 
     public void Release ()
     {
+        foreach (var mod in modules)
+        {
+            mod.OnReleaseEx();
+        }
+
         if (state == State.Holding && target != null)
         {
             target.Release(this);
