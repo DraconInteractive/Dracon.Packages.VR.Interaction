@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsMovement : InteractableMovement
+public class MovementMod_Physics : InteractableMovement
 {
     public float movementSpeed, rotationSpeed;
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractablePhysics : InteractableModule
+public class PhysicsMod_Core : InteractableModule
 {
     Rigidbody rb;
 
