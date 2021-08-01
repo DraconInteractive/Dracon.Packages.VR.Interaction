@@ -13,6 +13,8 @@ public class Interactor : MonoBehaviour
 
     InteractionsManager iManager;
 
+    public GameObject model;
+
     public enum State
     {
         Empty,
@@ -49,6 +51,7 @@ public class Interactor : MonoBehaviour
         lastPos = transform.position;
         state = State.Empty;
         iManager = InteractionsManager.Instance;
+        model.SetActive(true);
     }
 
     private void Update()
@@ -154,6 +157,7 @@ public class Interactor : MonoBehaviour
         target = _target;
         _target.Grab(this);
         state = State.Holding;
+        model.SetActive(false);
     }
 
     public void Summon ()
@@ -201,5 +205,6 @@ public class Interactor : MonoBehaviour
         {
             StopCoroutine(summonRoutine);
         }
+        model.SetActive(true);
     }
 }
