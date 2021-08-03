@@ -55,6 +55,7 @@ public class Interactor : MonoBehaviour
         iManager = InteractionsManager.Instance;
         model.SetActive(true);
 
+        modules = new List<InteractorModule>(gameObject.GetComponents<InteractorModule>());
         foreach (var mod in modules)
         {
             mod.Setup(this);
