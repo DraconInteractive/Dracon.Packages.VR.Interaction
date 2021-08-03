@@ -14,6 +14,6 @@ public class LocomotionMod : InteractorModule
         Vector3 dir = head.forward;
         dir.y = 0;
         body.position += dir * movementSpeed * target.thumbstick.y * Time.deltaTime;
-        body.Rotate(new Vector3(0, rotationSpeed * target.thumbstick.x * Time.deltaTime, 0));
+        body.RotateAround(head.position, Vector3.up, rotationSpeed * target.thumbstick.x * Time.deltaTime);
     }
 }
