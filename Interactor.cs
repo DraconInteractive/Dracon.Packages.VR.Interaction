@@ -9,6 +9,8 @@ public class Interactor : MonoBehaviour
     public Chirality hand;
 
     Interactable target;
+    public Interactable Target => target;
+
     Interactable last;
 
     InteractionsManager iManager;
