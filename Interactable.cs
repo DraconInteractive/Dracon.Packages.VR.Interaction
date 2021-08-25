@@ -7,7 +7,7 @@ public class Interactable : MonoBehaviour
 {
     public string ID;
     public float interactionRange;
-    public GameObject model, hover, hand;
+    public GameObject model, hover, handL, handR;
 
     public bool InHand => interactor != null;
 
@@ -65,9 +65,10 @@ public class Interactable : MonoBehaviour
         InteractionsManager.Interactables.Add(this);
 
         hovering.Clear();
-        hover.SetActive(false);
 
-        hand.SetActive(false);
+        hover.SetActive(false);
+        handL.SetActive(false);
+        handR.SetActive(false);
     }
 
     private void OnDisable()
@@ -146,7 +147,15 @@ public class Interactable : MonoBehaviour
             interactor.Release();
         }
         interactor = owner;
-        hand.SetActive(true);
+        if (owner == Interactor.left)
+        {
+            handL.SetActive(true);
+        }
+        else if (owner == interactor.right)
+        {
+            handR.SetActive(true);
+        }
+        handL.SetActive(true);
         onGrab?.Invoke();
         foreach (var module in modules)
         {
@@ -161,7 +170,8 @@ public class Interactable : MonoBehaviour
         {
             module.OnRelease();
         }
-        hand.SetActive(false);
+        handL.SetActive(false);
+        handR.SetActive(false);
         interactor = null;
     }
 
