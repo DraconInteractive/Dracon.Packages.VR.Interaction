@@ -123,19 +123,41 @@ public class Interactable : MonoBehaviour
             hover = _hover.gameObject;
         }
 
-        var _hand = transform.Find("Hand");
-        if (_hand == null)
+        var _oldhand = transform.Find("Hand");
+        if (_oldHand != null) 
         {
-            GameObject go = new GameObject("Hand");
+            _oldHand.name = "LHand";
+            handL = _oldHand.gameObject;
+        }
+
+        var _lhand = transform.Find("LHand");
+        if (_lhand == null)
+        {
+            GameObject go = new GameObject("LHand");
             go.transform.SetParent(this.transform);
             go.transform.localPosition = Vector3.zero;
             go.transform.localScale = Vector3.one;
 
-            hand = go;
+            handL = go;
         }
         else
         {
-            hand = _hand.gameObject;
+            handL = _lhand.gameObject;
+        }
+
+        var _rhand = transform.Find("RHand");
+        if (_rhand == null) 
+        {
+            GameObject go = new GameObject("RHand");
+            go.transform.SetParent(this.transform);
+            go.transform.localPosition = Vector3.zero;
+            go.transform.localScale = Vector3.one;
+
+            handR = go;
+        }
+        else
+        {
+            handR = _rhand.gameObject;
         }
     }
 #endif
@@ -151,7 +173,7 @@ public class Interactable : MonoBehaviour
         {
             handL.SetActive(true);
         }
-        else if (owner == interactor.right)
+        else if (owner == Interactor.right)
         {
             handR.SetActive(true);
         }
