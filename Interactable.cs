@@ -124,10 +124,10 @@ public class Interactable : MonoBehaviour
         }
 
         var _oldhand = transform.Find("Hand");
-        if (_oldHand != null) 
+        if (_oldhand != null) 
         {
-            _oldHand.name = "LHand";
-            handL = _oldHand.gameObject;
+            _oldhand.name = "LHand";
+            handL = _oldhand.gameObject;
         }
 
         var _lhand = transform.Find("LHand");
