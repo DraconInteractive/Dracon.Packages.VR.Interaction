@@ -1,19 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
     public string ID;
-    public float interactionRange;
-    public GameObject model, hover, handL, handR;
+    
+    public GameObject model;
+    public GrabPoint[] grabPoints;
 
-    public bool InHand => interactor != null;
+    [HideInInspector]
+    public GrabPoint firstGrab, secondGrab;
+
+    public int ActiveInteractors => (firstGrab == null) ? 0 : (secondGrab == null) ? 1 : 2;
+    public enum GrabState
+    {
+        Idle,
+        InLeft,
+        InRight,
+        InBoth
+    }
+
+    public GrabState State
+    {
+        get
+        {
+            var activeInteractors = ActiveInteractors;
+
+            if (activeInteractors == 0)
+            {
+                return GrabState.Idle;
+            } 
+            else
+            {
+                bool l = false;
+                bool r = false;
+
+                if (activeInteractors == 1)
+                {
+                    l = firstGrab.interactor == Interactor.left;
+                    r = firstGrab.interactor == Interactor.right;
+                }
+                else if (activeInteractors == 2)
+                {
+                    l = (firstGrab.interactor == Interactor.left) || (secondGrab.interactor == Interactor.left);
+                    r = (firstGrab.interactor == Interactor.right) || (secondGrab.interactor == Interactor.right);
+                }
+
+                if (l && r)
+                {
+                    return GrabState.InBoth;
+                } 
+                else if (l)
+                {
+                    return GrabState.InLeft;
+                } 
+                else if (r)
+                {
+                    return GrabState.InRight;
+                }
+            }
+
+            return GrabState.Idle;
+        }
+    }
 
     List<InteractableModule> modules = new List<InteractableModule>();
-    List<object> hovering = new List<object>();
-    public Interactor interactor;
 
     public UnityEvent onGrab, onRelease, onInteract;
 
@@ -25,6 +79,11 @@ public class Interactable : MonoBehaviour
         foreach (var module in modules)
         {
             module.Setup(this);
+        }
+
+        foreach (var g in grabPoints)
+        {
+            g.Setup(this);
         }
     }
 
@@ -57,6 +116,14 @@ public class Interactable : MonoBehaviour
         if (GUI.changed)
         {
             gameObject.name = $"Interactable ({ID})";
+
+            if (grabPoints != null && grabPoints.Length > 0)
+            {
+                foreach (var g in grabPoints)
+                {
+                    g.name = $"Grab Point ({g.transform.GetSiblingIndex()})";
+                }
+            }
         }
     }
 
@@ -64,11 +131,10 @@ public class Interactable : MonoBehaviour
     {
         InteractionsManager.Interactables.Add(this);
 
-        hovering.Clear();
-
-        hover.SetActive(false);
-        handL.SetActive(false);
-        handR.SetActive(false);
+        foreach (var g in grabPoints)
+        {
+            g.ResetPoint();
+        }
     }
 
     private void OnDisable()
@@ -83,145 +149,59 @@ public class Interactable : MonoBehaviour
             module.OnDestroyEx();
         }
     }
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+
+    public void PointGrab (GrabPoint point)
     {
-        Gizmos.DrawWireSphere(transform.position, interactionRange);
+        onGrab?.Invoke();
+
+        foreach (var module in modules)
+        {
+            module.OnGrab(point);
+        }
+
+        if (firstGrab == null) 
+        {
+            firstGrab = point;
+        }
+        else
+        {
+            secondGrab = point;
+        }
     }
 
-    [ContextMenu("Setup")]
-    public void Setup ()
+    public void PointRelease (GrabPoint point)
     {
-        var _model = transform.Find("Model");
-        if (_model == null)
-        {
-            GameObject go = new GameObject("Model");
-            go.transform.SetParent(this.transform);
-            go.transform.localPosition = Vector3.zero;
-            go.transform.localScale = Vector3.one;
+        onRelease?.Invoke();
 
-            model = go;
+        if (firstGrab == point)
+        {
+            if (secondGrab != null)
+            {
+                firstGrab = secondGrab;
+                secondGrab = null;
+            } else
+            {
+                firstGrab = null;
+            }
         } 
         else
         {
-            model = _model.gameObject;
+            secondGrab = null;
         }
 
-        var _hover = transform.Find("Hover");
-
-        if (_hover == null)
-        {
-            GameObject go = new GameObject("Hover");
-            go.transform.SetParent(this.transform);
-            go.transform.localPosition = Vector3.zero;
-            go.transform.localScale = Vector3.one;
-
-            hover = go;
-        }
-        else
-        {
-            hover = _hover.gameObject;
-        }
-
-        var _oldhand = transform.Find("Hand");
-        if (_oldhand != null) 
-        {
-            _oldhand.name = "LHand";
-            handL = _oldhand.gameObject;
-        }
-
-        var _lhand = transform.Find("LHand");
-        if (_lhand == null)
-        {
-            GameObject go = new GameObject("LHand");
-            go.transform.SetParent(this.transform);
-            go.transform.localPosition = Vector3.zero;
-            go.transform.localScale = Vector3.one;
-
-            handL = go;
-        }
-        else
-        {
-            handL = _lhand.gameObject;
-        }
-
-        var _rhand = transform.Find("RHand");
-        if (_rhand == null) 
-        {
-            GameObject go = new GameObject("RHand");
-            go.transform.SetParent(this.transform);
-            go.transform.localPosition = Vector3.zero;
-            go.transform.localScale = Vector3.one;
-
-            handR = go;
-        }
-        else
-        {
-            handR = _rhand.gameObject;
-        }
-    }
-#endif
-
-    public void Grab (Interactor owner)
-    {
-        if (interactor != null)
-        {
-            interactor.Release();
-        }
-        interactor = owner;
-        if (owner == Interactor.left)
-        {
-            handL.SetActive(true);
-        }
-        else if (owner == Interactor.right)
-        {
-            handR.SetActive(true);
-        }
-        handL.SetActive(true);
-        onGrab?.Invoke();
         foreach (var module in modules)
         {
-            module.OnGrab();
+            module.OnRelease(point);
         }
     }
 
-    public void Release (Interactor owner)
+    public void PointInteract (GrabPoint point)
     {
-        onRelease?.Invoke();
+        onInteract?.Invoke();
+
         foreach (var module in modules)
         {
-            module.OnRelease();
+            module.OnInteract(point);
         }
-        handL.SetActive(false);
-        handR.SetActive(false);
-        interactor = null;
-    }
-
-    public void Interact ()
-    {
-        foreach (var module in modules)
-        {
-            module.OnInteract();
-        }
-    }
-
-    public void AddHover (object owner)
-    {
-        if (!hovering.Contains(owner))
-        {
-            hovering.Add(owner);
-        }
-
-        hover.SetActive(hovering.Count > 0);
-    }
-
-    public void RemoveHover(object owner)
-    {
-        if (hovering.Contains(owner))
-        {
-            hovering.Remove(owner);
-        }
-
-        hover.SetActive(hovering.Count > 0);
     }
 }

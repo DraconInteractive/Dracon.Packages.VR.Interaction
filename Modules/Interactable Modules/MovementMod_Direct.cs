@@ -10,7 +10,7 @@ public class MovementMod_Direct : InteractableMovement
     {
         base.UpdateEx();
 
-        if (target.InHand)
+        if (InHand)
         {
             Move();
         }
@@ -20,7 +20,9 @@ public class MovementMod_Direct : InteractableMovement
     {
         base.Move();
 
-        transform.position = Vector3.MoveTowards(transform.position, target.interactor.transform.position, movementSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, target.interactor.transform.rotation, rotationSpeed * Time.deltaTime);
+        var t = TransformResult();
+
+        transform.position = Vector3.MoveTowards(transform.position, t.Item1, movementSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, t.Item2, rotationSpeed * Time.deltaTime);
     }
 }

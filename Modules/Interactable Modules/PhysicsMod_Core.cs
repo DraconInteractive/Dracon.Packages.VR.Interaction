@@ -14,33 +14,25 @@ public class PhysicsMod_Core : InteractableModule
         base.Setup(_target);
 
         rb = GetComponent<Rigidbody>();
-
-        target.onGrab.AddListener(OnGrab);
-        target.onRelease.AddListener(OnRelease);
     }
 
-    public override void OnDestroyEx()
-    {
-        base.OnDestroyEx();
-
-        target.onGrab.RemoveListener(OnGrab);
-        target.onRelease.RemoveListener(OnRelease);
-    }
-
-    void OnGrab ()
+    public override void OnGrab (GrabPoint point)
     {
         rb.isKinematic = true;
     }
 
-    void OnRelease ()
+    public override void OnRelease (GrabPoint point)
     {
-        rb.isKinematic = false;
-        
-        if (throwOnRelease)
+        if (point.owner.ActiveInteractors == 0)
         {
-            //rb.velocity *= 2.5f;
-            //rb.angularVelocity *= 2.5f;
-            rb.velocity = target.interactor.Velocity * throwForce;
+            rb.isKinematic = false;
+
+            if (throwOnRelease)
+            {
+                //rb.velocity *= 2.5f;
+                //rb.angularVelocity *= 2.5f;
+                rb.velocity = point.interactor.Velocity * throwForce;
+            }
         }
     }
 }

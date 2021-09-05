@@ -8,10 +8,10 @@ public class Interactor : MonoBehaviour
     public static Interactor left, right;
     public Chirality hand;
 
-    Interactable target;
-    public Interactable Target => target;
+    GrabPoint target;
+    public GrabPoint Target => target;
 
-    Interactable last;
+    GrabPoint last;
 
     InteractionsManager iManager;
 
@@ -168,7 +168,7 @@ public class Interactor : MonoBehaviour
         }
     }
 
-    public void Grab (Interactable _target)
+    public void Grab (GrabPoint _target)
     {
         if (target != null)
         {

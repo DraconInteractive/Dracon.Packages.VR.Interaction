@@ -35,18 +35,21 @@ public class InteractionsManager : MonoBehaviour
         Instance = this;
     }
 
-    public Interactable Target (Interactor hand)
+    public GrabPoint Target (Interactor hand)
     {
         float _dist = Mathf.Infinity;
-        Interactable _return = null;
+        GrabPoint _return = null;
 
         foreach (var i in Interactables)
         {
-            float dist = Vector3.Distance(i.transform.position, hand.transform.position);
-            if (dist < _dist && dist < i.interactionRange && !i.InHand)
+            foreach (var g in i.grabPoints)
             {
-                _dist = dist;
-                _return = i;
+                float dist = Vector3.Distance(g.transform.position, hand.transform.position);
+                if (dist < _dist && dist < g.interactionRange && !g.InHand)
+                {
+                    _dist = dist;
+                    _return = g;
+                }
             }
         }
 

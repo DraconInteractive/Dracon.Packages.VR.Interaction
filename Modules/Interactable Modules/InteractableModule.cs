@@ -6,7 +6,8 @@ public class InteractableModule : MonoBehaviour
 {
     protected Interactable target;
 
-    public bool InHand => target.InHand;
+    public bool InHand => target.State != Interactable.GrabState.Idle;
+
     public virtual void Setup(Interactable _target)
     {
         target = _target;
@@ -32,17 +33,17 @@ public class InteractableModule : MonoBehaviour
 
     }
 
-    public virtual void OnGrab ()
+    public virtual void OnGrab (GrabPoint point)
     {
 
     }
 
-    public virtual void OnRelease ()
+    public virtual void OnRelease (GrabPoint point)
     {
 
     }
 
-    public virtual void OnInteract ()
+    public virtual void OnInteract (GrabPoint point)
     {
 
     }

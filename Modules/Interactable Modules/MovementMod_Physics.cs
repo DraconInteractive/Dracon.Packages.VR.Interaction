@@ -19,7 +19,7 @@ public class MovementMod_Physics : InteractableMovement
     {
         base.FixedUpdateEx();
 
-        if (target.InHand)
+        if (InHand)
         {
             Move();
         }
@@ -29,7 +29,9 @@ public class MovementMod_Physics : InteractableMovement
     {
         base.Move();
 
-        rb.MovePosition(Vector3.MoveTowards(rb.position, target.interactor.transform.position, movementSpeed * Time.fixedDeltaTime));
-        rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, target.interactor.transform.rotation, rotationSpeed * Time.fixedDeltaTime));
+        var t = TransformResult();
+
+        rb.MovePosition(Vector3.MoveTowards(rb.position, t.Item1, movementSpeed * Time.fixedDeltaTime));
+        rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, t.Item2, rotationSpeed * Time.fixedDeltaTime));
     }
 }
