@@ -201,17 +201,26 @@ public class Interactor : MonoBehaviour
     }
 
     Coroutine summonRoutine;
-    IEnumerator SummonRoutine ()
+    IEnumerator SummonRoutine()
     {
         state = State.Summoning;
-
+        bool cutoff = false;
         for (float f = 0; f < 1; f += Time.deltaTime / summonTime)
         {
             summonProgress = f;
+            if ((bool)iManager.GetInput(InputAction.GetUp, InputBinding.Grip, hand))
+            {
+                cutoff = true;
+                break;
+            }
             yield return null;
         }
 
-        Grab(last);
+        if (!cutoff)
+        {
+            Grab(last);
+        }
+
         yield break;
     }
 
