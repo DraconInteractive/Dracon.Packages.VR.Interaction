@@ -22,7 +22,7 @@ public class RepositionBody : MonoBehaviour
         transform.position = anchor.position + (Vector3.down * down) + (Vector3.back * back);
         if (rotate)
         {
-            Vector3 anchorDir = head.forward;
+            Vector3 anchorDir = anchor.forward;
             anchorDir.y = 0;
             anchorDir.Normalize();
 
