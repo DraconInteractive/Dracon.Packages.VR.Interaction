@@ -11,13 +11,13 @@ public class Interactable : MonoBehaviour
 
     public bool InHand => interactor != null;
 
-    List<InteractableModule> modules = new List<InteractableModule>();
-    List<object> hovering = new List<object>();
+    protected List<InteractableModule> modules = new List<InteractableModule>();
+    protected List<object> hovering = new List<object>();
     public Interactor interactor;
 
     public UnityEvent onGrab, onRelease, onInteract;
 
-    private void Start()
+    protected virtual void Start()
     {
         var m = GetComponents<InteractableModule>();
         modules = new List<InteractableModule>(m);
@@ -28,7 +28,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         foreach (var module in modules)
         {
@@ -36,7 +36,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         foreach (var module in modules)
         {
@@ -44,7 +44,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    private void LateUpdate ()
+    protected virtual void LateUpdate ()
     {
         foreach (var module in modules)
         {
@@ -52,7 +52,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    private void OnValidate()
+    protected virtual void OnValidate()
     {
         if (GUI.changed)
         {
@@ -60,7 +60,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         InteractionsManager.Interactables.Add(this);
 
@@ -71,12 +71,12 @@ public class Interactable : MonoBehaviour
         handR.SetActive(false);
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         InteractionsManager.Interactables.Remove(this);
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         foreach (var module in modules)
         {
@@ -162,7 +162,7 @@ public class Interactable : MonoBehaviour
     }
 #endif
 
-    public void Grab (Interactor owner)
+    public virtual void Grab (Interactor owner)
     {
         if (interactor != null)
         {
@@ -185,7 +185,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    public void Release (Interactor owner)
+    public virtual void Release (Interactor owner)
     {
         onRelease?.Invoke();
         foreach (var module in modules)
@@ -197,7 +197,7 @@ public class Interactable : MonoBehaviour
         interactor = null;
     }
 
-    public void Interact ()
+    public virtual void Interact ()
     {
         foreach (var module in modules)
         {
@@ -205,7 +205,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    public void AddHover (object owner)
+    public virtual void AddHover (object owner)
     {
         if (!hovering.Contains(owner))
         {
@@ -215,7 +215,7 @@ public class Interactable : MonoBehaviour
         hover.SetActive(hovering.Count > 0);
     }
 
-    public void RemoveHover(object owner)
+    public virtual void RemoveHover(object owner)
     {
         if (hovering.Contains(owner))
         {
