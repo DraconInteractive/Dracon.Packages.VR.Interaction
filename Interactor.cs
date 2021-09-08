@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class Interactor : MonoBehaviour
@@ -44,6 +45,8 @@ public class Interactor : MonoBehaviour
     public Vector2 thumbstick;
 
     List<InteractorModule> modules = new List<InteractorModule>();
+
+    public Image stateDebug;
 
     private void Awake()
     {
@@ -156,6 +159,28 @@ public class Interactor : MonoBehaviour
         foreach (var mod in modules)
         {
             mod.OnUpdateEx();
+        }
+
+        if (stateDebug != null)
+        {
+            switch (state)
+            {
+                case State.Empty:
+                    stateDebug.color = Color.grey;
+                    break;
+                case State.Hovering:
+                    stateDebug = Color.cyan;
+                    break;
+                case State.Holding:
+                    stateDebug = Color.green;
+                    break;
+                case State.Summoning:
+                    stateDebug = Color.yellow;
+                    break;
+                case State.Climbing:
+                    stateDebug = Color.red;
+                    break;
+            }
         }
     }
 
