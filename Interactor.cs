@@ -224,7 +224,7 @@ public class Interactor : MonoBehaviour
             Joint.angularXMotion = Joint.angularYMotion = Joint.angularZMotion = ConfigurableJointMotion.Locked;
             Joint.anchor = transform.InverseTransformPoint(climbingAnchor.position);
             Joint.autoConfigureConnectedAnchor = false;
-            var hit = _colliders[0];
+            var hit = _climbColliders[0];
 
             if (!hit.attachedRigidbody)
             {
