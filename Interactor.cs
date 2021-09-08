@@ -169,16 +169,16 @@ public class Interactor : MonoBehaviour
                     stateDebug.color = Color.grey;
                     break;
                 case State.Hovering:
-                    stateDebug = Color.cyan;
+                    stateDebug.color = Color.cyan;
                     break;
                 case State.Holding:
-                    stateDebug = Color.green;
+                    stateDebug.color = Color.green;
                     break;
                 case State.Summoning:
-                    stateDebug = Color.yellow;
+                    stateDebug.color = Color.yellow;
                     break;
                 case State.Climbing:
-                    stateDebug = Color.red;
+                    stateDebug.color = Color.red;
                     break;
             }
         }
