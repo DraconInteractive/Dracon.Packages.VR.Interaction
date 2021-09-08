@@ -16,6 +16,11 @@ public class Interactor : MonoBehaviour
     InteractionsManager iManager;
 
     public GameObject model;
+    public Transform climbingAnchor;
+    public LayerMask climbLayer;
+    private float climbRadius = 0.1f;
+    private readonly Collider[] _climbColliders = new Collider[100];
+    private ConfigurableJoint Joint;
 
     public enum State
     {
@@ -39,7 +44,6 @@ public class Interactor : MonoBehaviour
     public Vector2 thumbstick;
 
     List<InteractorModule> modules = new List<InteractorModule>();
-    ConfigurableJoint Joint;
 
     private void Awake()
     {
@@ -49,6 +53,11 @@ public class Interactor : MonoBehaviour
         } else if (hand == Chirality.Right)
         {
             right = this;
+        }
+
+        if (climbingAnchor == null)
+        {
+            climbingAnchor = this.transform;
         }
     }
 
@@ -207,13 +216,13 @@ public class Interactor : MonoBehaviour
 
     public void ClimbGrab ()
     {
-        var hits = Physics.OverlapSphereNonAlloc(Anchor.position, Radius, _colliders, GrabLayer, QueryTriggerInteraction.Ignore);
+        var hits = Physics.OverlapSphereNonAlloc(climbingAnchor.position, climbRadius, _climbColliders, climbLayer, QueryTriggerInteraction.Ignore);
         if (hits > 0)
         {
             Joint = gameObject.AddComponent<ConfigurableJoint>();
             Joint.xMotion = Joint.yMotion = Joint.zMotion = ConfigurableJointMotion.Locked;
             Joint.angularXMotion = Joint.angularYMotion = Joint.angularZMotion = ConfigurableJointMotion.Locked;
-            Joint.anchor = transform.InverseTransformPoint(transform.position);
+            Joint.anchor = transform.InverseTransformPoint(climbingAnchor.position);
             Joint.autoConfigureConnectedAnchor = false;
             var hit = _colliders[0];
 
@@ -221,7 +230,7 @@ public class Interactor : MonoBehaviour
             {
                 for (var index = 0; index < hits; index++)
                 {
-                    var col = _colliders[index];
+                    var col = _climbColliders[index];
                     if (!col)
                         break;
                     if (col.attachedRigidbody)
@@ -235,11 +244,11 @@ public class Interactor : MonoBehaviour
             if (hit.attachedRigidbody)
             {
                 Joint.connectedBody = hit.attachedRigidbody;
-                Joint.connectedAnchor = hit.attachedRigidbody.transform.InverseTransformPoint(Anchor.position);
+                Joint.connectedAnchor = hit.attachedRigidbody.transform.InverseTransformPoint(climbingAnchor.position);
             }
             else
             {
-                Joint.connectedAnchor = Anchor.position;
+                Joint.connectedAnchor = climbingAnchor.position;
             }
 
             state = State.Climbing;
