@@ -22,7 +22,8 @@ public class Interactor : MonoBehaviour
         Empty,
         Summoning,
         Hovering,
-        Holding
+        Holding,
+        Climbing
     }
 
     public State state;
@@ -38,6 +39,7 @@ public class Interactor : MonoBehaviour
     public Vector2 thumbstick;
 
     List<InteractorModule> modules = new List<InteractorModule>();
+    ConfigurableJoint Joint;
 
     private void Awake()
     {
@@ -81,6 +83,13 @@ public class Interactor : MonoBehaviour
                 i.AddHover(this);
                 state = State.Hovering;
             }
+            else
+            {
+                if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Grip, hand))
+                {
+                    ClimbGrab();
+                }
+            }
         }
         else if (state == State.Hovering)
         {
@@ -119,6 +128,17 @@ public class Interactor : MonoBehaviour
             if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Grip, hand))
             {
                 Release();
+            }
+        }
+        else if (state == State.Climbing)
+        {
+            if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Grip, hand))
+            {
+                if (Joint)
+                {
+                    Destroy(Joint);
+                }
+                state = State.Empty;
             }
         }
 
@@ -182,6 +202,47 @@ public class Interactor : MonoBehaviour
         foreach (var mod in modules)
         {
             mod.OnGrabEx();
+        }
+    }
+
+    public void ClimbGrab ()
+    {
+        var hits = Physics.OverlapSphereNonAlloc(Anchor.position, Radius, _colliders, GrabLayer, QueryTriggerInteraction.Ignore);
+        if (hits > 0)
+        {
+            Joint = gameObject.AddComponent<ConfigurableJoint>();
+            Joint.xMotion = Joint.yMotion = Joint.zMotion = ConfigurableJointMotion.Locked;
+            Joint.angularXMotion = Joint.angularYMotion = Joint.angularZMotion = ConfigurableJointMotion.Locked;
+            Joint.anchor = transform.InverseTransformPoint(transform.position);
+            Joint.autoConfigureConnectedAnchor = false;
+            var hit = _colliders[0];
+
+            if (!hit.attachedRigidbody)
+            {
+                for (var index = 0; index < hits; index++)
+                {
+                    var col = _colliders[index];
+                    if (!col)
+                        break;
+                    if (col.attachedRigidbody)
+                    {
+                        hit = col;
+                        break;
+                    }
+                }
+            }
+
+            if (hit.attachedRigidbody)
+            {
+                Joint.connectedBody = hit.attachedRigidbody;
+                Joint.connectedAnchor = hit.attachedRigidbody.transform.InverseTransformPoint(Anchor.position);
+            }
+            else
+            {
+                Joint.connectedAnchor = Anchor.position;
+            }
+
+            state = State.Climbing;
         }
     }
 
