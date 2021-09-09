@@ -241,16 +241,17 @@ public class Interactor : MonoBehaviour
 
     public void ClimbGrab ()
     {
-        var hits = Physics.OverlapSphereNonAlloc(climbingAnchor.position, climbRadius, _climbColliders, climbLayer, QueryTriggerInteraction.Ignore);
-        if (hits > 0)
+        var closestPoint = ClimbPoint.Closest(climbingAnchor.position, climbRadius);
+        if (closestPoint != null)
         {
             Joint = gameObject.AddComponent<ConfigurableJoint>();
             Joint.xMotion = Joint.yMotion = Joint.zMotion = ConfigurableJointMotion.Locked;
             Joint.angularXMotion = Joint.angularYMotion = Joint.angularZMotion = ConfigurableJointMotion.Locked;
             Joint.anchor = transform.InverseTransformPoint(climbingAnchor.position);
             Joint.autoConfigureConnectedAnchor = false;
-            var hit = _climbColliders[0];
+            var hit = closestPoint.col;
 
+            /*
             if (!hit.attachedRigidbody)
             {
                 for (var index = 0; index < hits; index++)
@@ -265,7 +266,8 @@ public class Interactor : MonoBehaviour
                     }
                 }
             }
-
+            */
+            
             if (hit.attachedRigidbody)
             {
                 Joint.connectedBody = hit.attachedRigidbody;
