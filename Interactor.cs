@@ -17,12 +17,15 @@ public class Interactor : MonoBehaviour
     InteractionsManager iManager;
 
     public GameObject model;
+
+    [Header("Climbing")]
+    public bool useClimbing;
     public Transform climbingAnchor;
-    public LayerMask climbLayer;
-    private float climbRadius = 0.1f;
-    private readonly Collider[] _climbColliders = new Collider[100];
+    public float climbRadius = 0.1f;
     private ConfigurableJoint Joint;
 
+    [Space]
+    public bool debugClimbing;
     public enum State
     {
         Empty,
@@ -239,8 +242,13 @@ public class Interactor : MonoBehaviour
     public bool ClimbGrab ()
     {
         var closestPoint = ClimbPoint.Closest(climbingAnchor.position, climbRadius);
+        Debug.Log($"Finding Climb Point from {ClimbPoint.All.Count} options...");
         if (closestPoint != null)
         {
+            if (debugClimbing)
+            {
+                Debug.Log("Found Climbing Point");
+            }
             Joint = gameObject.AddComponent<ConfigurableJoint>();
             Joint.xMotion = Joint.yMotion = Joint.zMotion = ConfigurableJointMotion.Locked;
             Joint.angularXMotion = Joint.angularYMotion = Joint.angularZMotion = ConfigurableJointMotion.Locked;
