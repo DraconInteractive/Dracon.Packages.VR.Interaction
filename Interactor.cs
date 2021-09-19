@@ -144,7 +144,7 @@ public class Interactor : MonoBehaviour
         }
         else if (state == State.Climbing)
         {
-            if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Grip, hand))
+            if ((bool)iManager.GetInput(InputAction.GetUp, InputBinding.Grip, hand))
             {
                 if (Joint)
                 {
