@@ -82,12 +82,6 @@ public class Interactor : MonoBehaviour
     { 
         if (state == State.Empty)
         {
-            if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Grip, hand))
-            {
-                Summon();
-                return;
-            }
-
             var i = iManager.Target(this);
             if (i != null)
             {
@@ -99,7 +93,10 @@ public class Interactor : MonoBehaviour
             {
                 if ((bool)iManager.GetInput(InputAction.GetDown, InputBinding.Grip, hand))
                 {
-                    ClimbGrab();
+                    if (!ClimbGrab())
+                    {
+                        Summon();
+                    }
                 }
             }
         }
@@ -239,7 +236,7 @@ public class Interactor : MonoBehaviour
         }
     }
 
-    public void ClimbGrab ()
+    public bool ClimbGrab ()
     {
         var closestPoint = ClimbPoint.Closest(climbingAnchor.position, climbRadius);
         if (closestPoint != null)
@@ -279,7 +276,9 @@ public class Interactor : MonoBehaviour
             }
 
             state = State.Climbing;
+            return true;
         }
+        return false;
     }
 
     public void Summon ()
