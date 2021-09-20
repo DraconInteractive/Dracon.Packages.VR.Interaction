@@ -9,6 +9,7 @@ public class Interactor : MonoBehaviour
     public static Interactor left, right;
     public Chirality hand;
 
+    public Rigidbody rb;
     Interactable target;
     public Interactable Target => target;
 

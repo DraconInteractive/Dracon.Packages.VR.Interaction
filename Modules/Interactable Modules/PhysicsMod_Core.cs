@@ -40,7 +40,15 @@ public class PhysicsMod_Core : InteractableModule
         {
             //rb.velocity *= 2.5f;
             //rb.angularVelocity *= 2.5f;
-            rb.velocity = target.interactor.Velocity * throwForce;
+            if (target.interactor.rb != null)
+            {
+                rb.velocity = target.interactor.rb.velocity * throwForce;
+                rb.angularVelocity = target.interactor.rb.angularVelocity * throwForce;
+            }
+            else
+            {
+                rb.velocity = target.interactor.Velocity * throwForce;
+            }
         }
     }
 }
